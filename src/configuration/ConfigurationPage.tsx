@@ -7,6 +7,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 
 import { hasPermission } from "../auth/misc";
+import AppVersions from "../components/AppVersions";
 import Container from "../components/Container";
 import PageHeader from "../components/PageHeader";
 import { PermissionEnum } from "../types/globalTypes";
@@ -23,6 +24,11 @@ export interface MenuItem {
 export interface MenuSection {
   label: string;
   menuItems: MenuItem[];
+}
+
+interface AppVersions {
+  dashboardVersion: string;
+  coreVersion: string;
 }
 
 const useStyles = makeStyles(
@@ -92,11 +98,17 @@ const useStyles = makeStyles(
 export interface ConfigurationPageProps {
   menu: MenuSection[];
   user: User;
+  appVersions: AppVersions;
   onSectionClick: (sectionName: string) => void;
 }
 
 export const ConfigurationPage: React.FC<ConfigurationPageProps> = props => {
-  const { menu: menus, user, onSectionClick } = props;
+  const {
+    menu: menus,
+    user,
+    onSectionClick,
+    appVersions: { dashboardVersion, coreVersion }
+  } = props;
   const classes = useStyles(props);
 
   const intl = useIntl();
@@ -105,7 +117,12 @@ export const ConfigurationPage: React.FC<ConfigurationPageProps> = props => {
       <PageHeader
         className={classes.header}
         title={intl.formatMessage(sectionNames.configuration)}
-      />
+      >
+        <AppVersions
+          dashboardVersion={dashboardVersion}
+          coreVersion={coreVersion}
+        />
+      </PageHeader>
       {menus
         .filter(menu =>
           menu.menuItems.some(menuItem =>
